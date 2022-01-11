@@ -9,26 +9,23 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     'LXFOPVEFRNHR'
     """
     ciphertext = ""
-    k = 0
-    while len(keyword) < len(plaintext):
-        keyword += keyword[k % len(keyword)]
-        k += 1
-    alpha_s = [chr(x) for x in range(ord("a"), ord("z") + 1)]
-    alpha_c = [chr(x) for x in range(ord("A"), ord("Z") + 1)]
-    for i in range(len(plaintext)):
-        key = keyword[i]
-        shift = 0
-        if key in alpha_c:
-            shift = alpha_c.index(key)
-        elif key in alpha_s:
-            shift = alpha_s.index(key)
-        symb = plaintext[i]
-        if symb in alpha_s:
-            ciphertext += alpha_s[(alpha_s.index(symb) + shift) % len(alpha_s)]
-        elif symb in alpha_c:
-            ciphertext += alpha_c[(alpha_c.index(symb) + shift) % len(alpha_c)]
+    for i, letters in enumerate(plaintext):
+        shift = ord(keyword[i % len(keyword)])
+        if ord("A") <= shift <= ord("Z"):
+            shift -= ord("A")
         else:
-            ciphertext += symb
+            shift -= ord("a")
+        if (
+            ord("A") <= ord(letters) <= ord("Z") - shift
+            or ord("a") <= ord(letters) <= ord("z") - shift
+        ):
+            ciphertext += chr(ord(letters) + shift)
+        elif ord("Z") - shift < ord(letters) <= ord("Z") or ord("z") - shift <= ord(letters) <= ord(
+            "z"
+        ):
+            ciphertext += chr(ord(letters) + shift - (ord("Z") - ord("A") + 1))
+        else:
+            ciphertext += letters
     return ciphertext
 
 
@@ -43,24 +40,21 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     'ATTACKATDAWN'
     """
     plaintext = ""
-    k = 0
-    while len(keyword) < len(ciphertext):
-        keyword += keyword[k % len(keyword)]
-        k += 1
-    alpha_s = [chr(x) for x in range(ord("a"), ord("z") + 1)]
-    alpha_c = [chr(x) for x in range(ord("A"), ord("Z") + 1)]
-    for i in range(len(ciphertext)):
-        key = keyword[i]
-        shift = 0
-        if key in alpha_c:
-            shift = alpha_c.index(key)
-        elif key in alpha_s:
-            shift = alpha_s.index(key)
-        symb = ciphertext[i]
-        if symb in alpha_s:
-            plaintext += alpha_s[(alpha_s.index(symb) - shift) % len(alpha_s)]
-        elif symb in alpha_c:
-            plaintext += alpha_c[(alpha_c.index(symb) - shift) % len(alpha_c)]
+    for i, letters in enumerate(ciphertext):
+        shift = ord(keyword[i % len(keyword)])
+        if ord("A") <= shift <= ord("Z"):
+            shift -= ord("A")
         else:
-            plaintext += symb
+            shift -= ord("a")
+        if ord("A") + shift <= ord(letters) <= ord("Z") or ord("a") + shift <= ord(letters) <= ord(
+            "z"
+        ):
+            plaintext += chr(ord(letters) - shift)
+        elif (
+            ord("A") <= ord(letters) < ord("A") + shift
+            or ord("a") <= ord(letters) < ord("a") + shift
+        ):
+            plaintext += chr(ord(letters) - shift + ord("Z") - ord("A") + 1)
+        else:
+            plaintext += letters
     return plaintext
