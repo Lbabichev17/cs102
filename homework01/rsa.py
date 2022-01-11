@@ -12,20 +12,13 @@ def is_prime(n: int) -> bool:
     >>> is_prime(8)
     False
     """
-    k = 0
-    for i in range(1, round(n ** (1 / 2)) + 1):
+
+    if n <= 1:
+        return False
+    for i in range(2, int(n ** (1 / 2)) + 1):
         if n % i == 0:
-            k += 1
-    if n == 2:
-        n = bool(True)
-    elif n == 1:
-        n = bool(False)
-    else:
-        if k > 1:
-            n = bool(False)
-        else:
-            n = bool(True)
-    return n
+            return False
+    return True
 
 
 def gcd(a: int, b: int) -> int:
@@ -44,7 +37,7 @@ def gcd(a: int, b: int) -> int:
                 m = i
     if a == 0 or b == 0:
         m = max(a, b)
-    if a == 0 and b == 0:
+    elif a == 0 and b == 0:
         m = 0
     return m
 
@@ -79,10 +72,8 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
     elif p == q:
         raise ValueError("p and q cannot be equal")
 
-    # n = pq
     n = p * q
 
-    # phi = (p-1)(q-1)
     phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
