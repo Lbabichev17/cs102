@@ -14,51 +14,25 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    for c in plaintext:
-
-        # проверить, является ли символ заглавной буквой
-        if c.isupper():
-
-            c_index = ord(c) - ord("A")
-
-            # выполнить отрицательный сдвиг
+    for character in plaintext:
+        if character.isupper():
+            c_index = ord(character) - ord("A")
             new_index = (c_index + shift) % 26
-
-            # преобразовать в новый символ
             new_unicode = new_index + ord("A")
-
             new_character = chr(new_unicode)
-
-            # добавление к простой строке
             ciphertext += new_character
-
-        elif c.islower():
-            # найти положение в 0-25
-            c_unicode = ord(c)
-
-            c_index = ord(c) - ord("a")
-
-            # выполнить отрицательный сдвиг
+        elif character.islower():
+            c_unicode = ord(character)
+            c_index = ord(character) - ord("a")
             new_index = (c_index + shift) % 26
-
-            # преобразовать в новый символ
             new_unicode = new_index + ord("a")
-
             new_character = chr(new_unicode)
-
-            # добавление к простой строке
             ciphertext += new_character
-        elif c.isdigit():
-
-            # если это число, сдвинуть его фактическое значение
-            c_new = int(c)
-
+        elif character.isdigit():
+            c_new = int(character)
             ciphertext += str(c_new)
-
         else:
-
-            # если нет ни алфавита, ни числа, оставьте все как есть
-            ciphertext += c
+            ciphertext += character
     return ciphertext
 
 
@@ -75,45 +49,25 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    for c in ciphertext:
-        if c.isupper():
-
-            c_index = ord(c) - ord("A")
-
+    for character in ciphertext:
+        if character.isupper():
+            c_index = ord(character) - ord("A")
             new_index = (c_index - shift) % 26
-
             new_unicode = new_index + ord("A")
-
             new_character = chr(new_unicode)
-
             plaintext += new_character
 
-        elif c.islower():
-
-            c_unicode = ord(c)
-
-            c_index = ord(c) - ord("a")
-
+        elif character.islower():
+            c_unicode = ord(character)
+            c_index = ord(character) - ord("a")
             new_index = (c_index - shift) % 26
-
             new_unicode = new_index + ord("a")
-
             new_character = chr(new_unicode)
-
             plaintext += new_character
-        elif c.isdigit():
-            c_new = int(c)
-
+        elif character.isdigit():
+            c_new = int(character)
             plaintext += str(c_new)
         else:
-            plaintext += c
+            plaintext += character
     return plaintext
 
-
-def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
-    """
-    Brute force breaking a Caesar cipher.
-    """
-    best_shift = 0
-    # PUT YOUR CODE HERE
-    return best_shift
