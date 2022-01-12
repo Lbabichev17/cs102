@@ -46,8 +46,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
-    a = pos[0]
-    return [x for x in grid[a]]
+    return [x for x in grid[pos[0]]]
 
     """Возвращает все значения для номера строки, указанной в pos
     >>> get_row([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
@@ -60,8 +59,7 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
-    b = pos[1]
-    return [x[b] for x in grid]
+    return [x[pos[1]] for x in grid]
 
     """Возвращает все значения для номера столбца, указанного в pos
     >>> get_col([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
@@ -113,20 +111,15 @@ def find_empty_positions(grid: tp.List[tp.List[str]]):
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
+    possibilities = set()
     find_in_row = get_row(grid, pos)
     find_in_col = get_col(grid, pos)
     find_in_block = get_block(grid, pos)
-    a = [(x, y, z) for x in find_in_row for y in find_in_col for z in find_in_block]
-    possibilities = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    fin_pos = []
-    for each in a:
-        for i in each:
-            for hcae in possibilities:
-                if i == hcae:
-                    fin_pos.append(hcae)
-
-    find_possible = list(set(possibilities).difference(fin_pos))
-    return set(find_possible)
+    for possibility in "123456789":
+        if not (possibility in find_in_row or possibility in find_in_col):
+            if not possibility in find_in_block:
+                possibilities.add(possibility)
+    return possibilities
 
     """Вернуть множество возможных значения для указанной позиции
     >>> grid = read_sudoku('puzzle1.txt')
@@ -140,17 +133,18 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
 
 
 def solve(grid: tp.List[tp.List[str]]):
-    if find_empty_positions(grid) is None:
-        return grid
-    for i in find_possible_values(grid, find_empty_positions(grid)):
-        pos = find_empty_positions(grid)
-        a = pos[0]
-        b = pos[1]
-        grid[a][b] = i
-        if solve(grid):
-            return grid
-        grid[a][b] = "."
-    return None
+    pos = find_empty_positions(grid)
+    if pos:
+        values = find_possible_values(grid, pos)
+        if len(values) > 0:
+            for i, value in enumerate(values):
+                grid[pos[0]][pos[1]] = value
+                result = solve(grid)
+                if result is not None:
+                    return result
+                grid[pos[0]][pos[1]] = "."
+        return None
+    return grid
 
     """ Решение пазла, заданного в grid """
     """ Как решать Судоку?
