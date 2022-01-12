@@ -4,6 +4,7 @@ import typing as tp
 def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     """
     Encrypts plaintext using a Caesar cipher.
+
     >>> encrypt_caesar("PYTHON")
     'SBWKRQ'
     >>> encrypt_caesar("python")
@@ -14,31 +15,14 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    for character in plaintext:
-        if character.isupper():
-            c_index = ord(character) - ord("A")
-            new_index = (c_index + shift) % 26
-            new_unicode = new_index + ord("A")
-            new_character = chr(new_unicode)
-            ciphertext += new_character
-        elif character.islower():
-            c_unicode = ord(character)
-            c_index = ord(character) - ord("a")
-            new_index = (c_index + shift) % 26
-            new_unicode = new_index + ord("a")
-            new_character = chr(new_unicode)
-            ciphertext += new_character
-        elif character.isdigit():
-            c_new = int(character)
-            ciphertext += str(c_new)
-        else:
-            ciphertext += character
+    # PUT YOUR CODE HERE
     return ciphertext
 
 
 def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     """
     Decrypts a ciphertext using a Caesar cipher.
+
     >>> decrypt_caesar("SBWKRQ")
     'PYTHON'
     >>> decrypt_caesar("sbwkrq")
@@ -49,24 +33,14 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    for character in ciphertext:
-        if character.isupper():
-            c_index = ord(character) - ord("A")
-            new_index = (c_index - shift) % 26
-            new_unicode = new_index + ord("A")
-            new_character = chr(new_unicode)
-            plaintext += new_character
-
-        elif character.islower():
-            c_unicode = ord(character)
-            c_index = ord(character) - ord("a")
-            new_index = (c_index - shift) % 26
-            new_unicode = new_index + ord("a")
-            new_character = chr(new_unicode)
-            plaintext += new_character
-        elif character.isdigit():
-            c_new = int(character)
-            plaintext += str(c_new)
-        else:
-            plaintext += character
+    # PUT YOUR CODE HERE
     return plaintext
+
+
+def caesar_breaker_brute_force(ciphertext: str, dictionary: tp.Set[str]) -> int:
+    """
+    Brute force breaking a Caesar cipher.
+    """
+    best_shift = 0
+    # PUT YOUR CODE HERE
+    return best_shift
