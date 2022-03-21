@@ -16,7 +16,7 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     years_of_birth = []
     for friend in friends:
         try:
-            bdate = dt.datetime.strptime(friend["bdate"], "%d.%m.%Y")
+            bdate = dt.datetime.strptime(friend["bdate"], "%d.%m.%Y")  # type: ignore
         except (KeyError, ValueError):
             continue
         years_of_birth.append(dt.datetime.now().year - bdate.year)
