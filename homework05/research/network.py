@@ -71,3 +71,7 @@ def describe_communities(
                     data.append([cluster_n] + [friend.get(field) for field in fields])
                     break
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
+
+
+
+
