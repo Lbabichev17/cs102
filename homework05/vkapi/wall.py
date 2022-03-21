@@ -81,5 +81,3 @@ def get_wall_execute(
         except:
             pass
     return json_normalize(all_wall_posts)
-
-
