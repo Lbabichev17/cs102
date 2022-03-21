@@ -3,7 +3,7 @@ import math
 import time
 import typing as tp
 
-from vkapi import config, exceptions, session
+from vkapi import config, exceptions, session  # type: ignore
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
 
@@ -29,7 +29,6 @@ def get_friends(
     :param fields: Список полей, которые нужно получить для каждого пользователя.
     :return: Список идентификаторов друзей пользователя или список пользователей.
     """
-    resp = FriendsResponse(0, [0])
     params = {
         "access_token": config.VK_CONFIG["access_token"],
         "v": config.VK_CONFIG["version"],
@@ -41,10 +40,7 @@ def get_friends(
     response = session.get("friends.get", params=params)
     if "error" in response.json() or not response.ok:
         raise exceptions.APIError(response.json()["error"]["error_msg"])
-    resp = FriendsResponse(
-        response.json()["response"]["count"], response.json()["response"]["items"]
-    )
-    return resp
+    return FriendsResponse(**response.json()["response"])
 
 
 class MutualFriends(tp.TypedDict):
@@ -77,8 +73,10 @@ def get_mutual(
             raise Exception
         target_uids = [target_uid]
     responses = []
-
-    row = range(math.ceil(len(target_uids) / 100))
+    if progress:
+        row = progress(range(math.ceil(len(target_uids) / 100)))
+    else:
+        row = range(math.ceil(len(target_uids) / 100))
     for n in row:
         params = {
             "access_token": config.VK_CONFIG["access_token"],
@@ -97,9 +95,9 @@ def get_mutual(
         if not isinstance(response.json()["response"], list):
             response.append(  # type: ignore
                 MutualFriends(
-                    id=response["response"]["id"],
-                    common_friends=response["response"]["common_friends"],
-                    common_count=response["response"]["common_count"],
+                    id=response["response"]["id"],  # type: ignore
+                    common_friends=response["response"]["common_friends"],  # type: ignore
+                    common_count=response["response"]["common_count"],  # type: ignore
                 )
             )
         else:
