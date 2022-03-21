@@ -5,7 +5,6 @@ from string import Template
 
 import pandas as pd
 from pandas import json_normalize
-
 from vkapi import config
 from vkapi.exceptions import APIError
 from vkapi.session import Session
@@ -82,3 +81,5 @@ def get_wall_execute(
         except:
             pass
     return json_normalize(all_wall_posts)
+
+
