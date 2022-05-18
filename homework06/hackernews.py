@@ -1,11 +1,11 @@
-from bayes import NaiveBayesClassifier
-from bottle import redirect, request, route, run, template
-from db import News, session
+from bottle import route, run, template, request, redirect
+
 from scraputils import get_news
+from db import News, session
+from bayes import NaiveBayesClassifier
+
 
 classifier = None  # объявляем переменную для классификатора
-
-
 
 
 @route("/")
@@ -13,7 +13,7 @@ classifier = None  # объявляем переменную для класси
 def news_list():
     s = session()
     rows = s.query(News).filter(News.label == None).all()
-    return template('news_template', rows=rows)
+    return template("news_template", rows=rows)
 
 
 @route("/add_label/")
@@ -21,7 +21,7 @@ def add_label():
     news_id = int(request.query.id)
     news_label = str(request.query.label)
     s = session()
-    s.query(News).filter_by(id=news_id).update({'label': news_label})
+    s.query(News).filter_by(id=news_id).update({"label": news_label})
     s.commit()
     redirect("/news")
 
@@ -29,15 +29,15 @@ def add_label():
 @route("/update")
 def update_news():
     s = session()
-    news_list = get_news('https://news.ycombinator.com/newest', 1)
+    news_list = get_news("https://news.ycombinator.com/newest", 1)
     count = 0
     for n in news_list:
         news = News(
-            title=n['title'],
-            author=n['author'],
-            url=n['url'],
-            comments=n['comments'],
-            points=n['points']
+            title=n["title"],
+            author=n["author"],
+            url=n["url"],
+            comments=n["comments"],
+            points=n["points"],
         )
         in_database = False
         for row in s.query(News).all():
@@ -49,7 +49,7 @@ def update_news():
             s.add(news)
             count += 1
     s.commit()
-    print(f'Added {count} news to database')
+    print(f"Added {count} news to database")
     redirect("/news")
 
 
@@ -66,30 +66,30 @@ def classify_news():
     global classifier
     classifier = NaiveBayesClassifier(alpha=1)
     classifier.fit(normalized_titles[:800], labels[:800])
-    print('score:', classifier.score(normalized_titles[800:], labels[800:]))
-    print('label freq:', classifier.y_frequency)
-    return redirect('/recommendations')
+    print("score:", classifier.score(normalized_titles[800:], labels[800:]))
+    print("label freq:", classifier.y_frequency)
+    return redirect("/recommendations")
 
 
-@route('/recommendations')
+@route("/recommendations")
 def recommendations():
     global classifier
     if classifier:
-        news_list = get_news('https://news.ycombinator.com/newest', 1)
-        titles = [n['title'] for n in news_list]
+        news_list = get_news("https://news.ycombinator.com/newest", 1)
+        titles = [n["title"] for n in news_list]
         normalized_titles = []
         for title in titles:
             normalized_titles.append((title))
         labels = classifier.predict(normalized_titles)
         for i in range(len(news_list)):
-            news_list[i]['label'] = labels[i]
-        return template('news_recommendations', rows=news_list)
+            news_list[i]["label"] = labels[i]
+        return template("news_recommendations", rows=news_list)
     else:
-        return redirect('/classify')
+        return redirect("/classify")
+
 
 if __name__ == "__main__":
     s = session()
     rows = s.query(News).filter(News.label == None).all()
-    
-    run(host="localhost", port=8099)
 
+    run(host="localhost", port=8099)

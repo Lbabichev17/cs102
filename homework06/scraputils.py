@@ -53,4 +53,3 @@ def get_news(url, n_pages=1):
 
 if __name__ == "__main__":
     print(get_news("https://news.ycombinator.com/newest", n_pages=2)[:4])
-

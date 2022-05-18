@@ -1,17 +1,16 @@
-import csv
-from collections import Counter, defaultdict
+from collections import defaultdict, Counter
 from math import log
+import csv
 
 
 class NaiveBayesClassifier:
-
     def __init__(self, alpha=1):
         self.alpha = alpha
         self.x_frequency = None
         self.y_frequency = None
 
     def fit(self, X, y):
-        """ Fit Naive Bayes classifier according to X, y. """
+        """Fit Naive Bayes classifier according to X, y."""
         # класс написан универсально для любого количества уникальных y
         total_rows = len(y)  # количество строк в данных
 
@@ -41,33 +40,41 @@ class NaiveBayesClassifier:
         for word in x_count.keys():
             for label in x_count[word].keys():
                 # print(word, label, x_count[word][label], y_count[label])
-                x_frequency[word][label] = (x_count[word][label] + self.alpha) / (y_count[label] + d * self.alpha)
+                x_frequency[word][label] = (x_count[word][label] + self.alpha) / (
+                    y_count[label] + d * self.alpha
+                )
 
         # запоминаем частоты
         self.x_frequency = x_frequency
         self.y_frequency = y_frequency
 
     def predict(self, X):
-        """ Perform classification on an array of test vectors X. """
+        """Perform classification on an array of test vectors X."""
         y = []  # на выходе список в том же порядке
         for text in X:
             predictions = {}  # вероятности данного предложения по каждой из меток
             for label in self.y_frequency.keys():
                 # сумма логарифмированных вероятностей слов
-                log_sum = sum((log(self.x_frequency[word][label]) for word in text if word in self.x_frequency.keys()))
+                log_sum = sum(
+                    (
+                        log(self.x_frequency[word][label])
+                        for word in text
+                        if word in self.x_frequency.keys()
+                    )
+                )
                 # print(text, label, log_sum)
                 # вероятность данного предложения с данной меткой
                 predictions[label] = log(self.y_frequency[label]) + log_sum
-            y.append(max(predictions, key=predictions.get))  # добавляем ключ наибольшего элемента словаря
+            y.append(
+                max(predictions, key=predictions.get)
+            )  # добавляем ключ наибольшего элемента словаря
         return y
 
     def score(self, X_test, y_test):
-        """ Returns the mean accuracy on the given test data and labels. """
+        """Returns the mean accuracy on the given test data and labels."""
         y = self.predict(X_test)
         accurate = 0
         for prediction, test in zip(y, y_test):
             if prediction == test:
                 accurate += 1
         return accurate / len(X_test)
-
-
