@@ -1,6 +1,6 @@
-from collections import defaultdict, Counter
-from math import log
 import csv
+from collections import Counter, defaultdict
+from math import log
 
 
 class NaiveBayesClassifier:
