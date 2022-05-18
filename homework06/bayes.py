@@ -1,5 +1,5 @@
 import csv
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from math import log
 
 
